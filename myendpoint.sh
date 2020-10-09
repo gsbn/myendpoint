@@ -1,3 +1,6 @@
+# Script version
+version="1.001"
+
 # Get hostname
 hostname=`hostname` 2>/dev/null
 
@@ -19,14 +22,16 @@ uptime=`uptime -p | cut -c 4-` 2>/dev/null
 if [ $distro = "ras" ]; then
     screenraw=`tvservice -s | awk '{ print $2 }'` 2>/dev/null
     if [ $screenraw = "0xa" ]; then
-        screen="ON"
+        screen="1" # On
     elif [ $screenraw = "0x2" ]; then
-        screen="OFF"
+        screen="0" # Off
+    else
+        screen="-1" # None
     fi
 elif [ $distro = "ubu" ]; then
     screen=-2
 else
-    screen=-1
+    screen=-2
 fi
 
 # Get Temp
@@ -37,4 +42,4 @@ else
 fi
 
 # Return JSON
-printf '{"hostname":"%s","ip":"%s","distro":"%s","uptime":"%s","screen":"%s","temp":"%0.1f°C"}\n' "$hostname" "$ip" "$distro" "$uptime" "$screen" "$temp"
+printf '{"hostname":"%s","ip":"%s","distro":"%s","uptime":"%s","screen":"%s","temp":"%0.1f°C","version":"%s"}\n' "$hostname" "$ip" "$distro" "$uptime" "$screen" "$temp" "$version"
