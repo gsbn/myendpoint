@@ -7,9 +7,9 @@ ip=`ip route get 1.1.1.1 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}'` 2>/dev/n
 # Get Distro
 distro=`awk -F= '$1=="ID" { print $2 ;}' /etc/os-release` 2>/dev/null
 if [ $distro = "raspbian" ]; then
-    $distro="ras"
+    distro="ras"
 elif [ $distro = "ubuntu" ]; then
-    $distro="ubu"
+    distro="ubu"
 fi
 
 # Get Uptime
