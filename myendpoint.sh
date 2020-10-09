@@ -37,8 +37,10 @@ fi
 # Get Temp
 if [ $distro = "ras" ]; then
     temp=`cat /sys/class/thermal/thermal_zone0/temp | awk '{ print $1/1000 }'` 2>/dev/null
+elif [ $distro = "ubu" ]; then
+    temp=`cat /sys/class/thermal/thermal_zone2/temp | awk '{ print $1/1000 }'` 2>/dev/null
 else
-    temp=0
+    temp=-1
 fi
 
 # Return JSON
