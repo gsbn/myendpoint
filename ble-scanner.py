@@ -1,3 +1,5 @@
+import socket
+import json
 from datetime import datetime
 from bluepy.btle import Scanner, DefaultDelegate
 
@@ -22,27 +24,45 @@ class ScanDelegate(DefaultDelegate):
                 mydata = dev.rawData[7:]
                 print('    FormatVer:', ord(mydata[0:1]), mydata[0:1].hex())
                 temp = int.from_bytes(mydata[1:3], byteorder='big', signed=True) * 0.005
-                print('     Temp:', temp, mydata[1:3].hex())
+                #print('     Temp:', temp, mydata[1:3].hex())
                 humid = int.from_bytes(mydata[3:5], byteorder='big') * 0.0025
-                print('    Humid:', humid, mydata[3:5].hex())
+                #print('    Humid:', humid, mydata[3:5].hex())
                 press = int.from_bytes(mydata[5:7], byteorder='big') + 50000
-                print('    Press:', press, mydata[5:7].hex())
+                #print('    Press:', press, mydata[5:7].hex())
                 accx = int.from_bytes(mydata[7:9], byteorder='big', signed=True)
-                print('     AccX:', accx, mydata[7:9].hex())
+                #print('     AccX:', accx, mydata[7:9].hex())
                 accy = int.from_bytes(mydata[9:11], byteorder='big', signed=True)
-                print('     AccY:', accy, mydata[9:11].hex())
+                #print('     AccY:', accy, mydata[9:11].hex())
                 accz = int.from_bytes(mydata[11:13], byteorder='big', signed=True)
-                print('     AccZ:', accz, mydata[11:13].hex())
+                #print('     AccZ:', accz, mydata[11:13].hex())
                 powerbit = bin(int.from_bytes(mydata[13:15], byteorder='big'))[2:]
                 power = int(powerbit[0:11], 2) + 1600
                 tx = (int(powerbit[11:], 2)*2)-40
-                print('     Batt:', power, powerbit, mydata[13:15].hex())
-                print('  TXPower:', tx, powerbit, mydata[13:15].hex())
+                #print('     Batt:', power, powerbit, mydata[13:15].hex())
+                #print('  TXPower:', tx, powerbit, mydata[13:15].hex())
                 movct = int.from_bytes(mydata[15:16], byteorder='big')
-                print('    MovCt:', movct, mydata[15:16].hex())
+                #print('    MovCt:', movct, mydata[15:16].hex())
                 seq = int.from_bytes(mydata[16:18], byteorder='big')
-                print('      Seq:', seq, mydata[16:18].hex())
-                print('      MAC:', mydata[18:24].hex())
+                #print('      Seq:', seq, mydata[16:18].hex())
+                mac = mydata[18:24].hex()
+                #print('      MAC:', mydata[18:24].hex())
+                # JSON Format
+                ble_dict = {"data_format": "101",
+                    "humidity": humid,
+                    "temperature": temp,
+                    "pressure": press,
+                    "acceleration": 0,
+                    "acceleration_x": accx,
+                    "acceleration_y": accy,
+                    "acceleration_z": accz,
+                    "tx_power": tx,
+                    "battery": power,
+                    "movement_counter": movct,
+                    "measurement_sequence_number": seq,
+                    "mac": mac
+                }
+                print(json.dumps(ble_dict, indent = 4))
+
             elif mft == 0x0583:
                 print(' Manfacturer: PuckJS 0x0583')
                 mydata = dev.rawData[7:]
