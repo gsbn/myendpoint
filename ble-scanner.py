@@ -1,5 +1,6 @@
 import socket
 import json
+import math
 from datetime import datetime
 from bluepy.btle import Scanner, DefaultDelegate
 
@@ -52,7 +53,7 @@ class ScanDelegate(DefaultDelegate):
                     "humidity": "{:.2f}".format(humid),
                     "temperature": "{:.2f}".format(temp),
                     "pressure": press,
-                    "acceleration": 0,
+                    "acceleration": math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z),
                     "acceleration_x": accx,
                     "acceleration_y": accy,
                     "acceleration_z": accz,
