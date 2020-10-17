@@ -8,6 +8,21 @@ class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
 
+    def send_hs_command(address, port, sdata):
+        data = b""
+
+        #print("TCP Opening Socket")
+        tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            tcp_sock.connect((address, port))
+            tcp_sock.send(bytes(sdata + "\r\n", "ascii"))
+            data = tcp_sock.recv(2048)
+        except socket.error:
+            print("TCP Socket closed")
+        finally:
+            tcp_sock.close()
+        return data
+
     def handleDiscovery(self, dev, isNewDev, isNewData):
         bleheader = dev.rawData[0:3].hex()
         msglen = ord(dev.rawData[3:4])
@@ -63,7 +78,9 @@ class ScanDelegate(DefaultDelegate):
                     "measurement_sequence_number": seq,
                     "mac": mac
                 }
-                print(json.dumps(ble_dict, indent = 4))
+                json_data = json.dumps(ble_dict, indent = 4)
+                print(json_data)
+                send_hs_command("10.2.0.23", 1888, json_data)                
 
             elif mft == 0x0583:
                 print(' Manfacturer: PuckJS 0x0583')
