@@ -53,7 +53,7 @@ class ScanDelegate(DefaultDelegate):
                     "humidity": "{:.2f}".format(humid),
                     "temperature": "{:.2f}".format(temp),
                     "pressure": press,
-                    "acceleration": math.sqrt(acc_x * acc_x + acc_y * acc_y + acc_z * acc_z),
+                    "acceleration": math.sqrt(accx * accx + accy * accy + accz * accz),
                     "acceleration_x": accx,
                     "acceleration_y": accy,
                     "acceleration_z": accz,
