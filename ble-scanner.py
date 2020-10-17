@@ -24,11 +24,14 @@ class ScanDelegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
-        bleheader = dev.rawData[0:3].hex()
-        msgtype = dev.rawData[4:5].hex()
+        try:
+            bleheader = dev.rawData[0:3].hex()
+            msglen = ord(dev.rawData[3:4])
+            msgtype = dev.rawData[4:5].hex()
+        except Exception:
+            pass
 
         if bleheader == "020106" and msgtype == "ff":
-            msglen = ord(dev.rawData[3:4])
             
             #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi)
             #print(' BLEHeader: ', bleheader)
