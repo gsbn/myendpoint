@@ -29,7 +29,9 @@ class ScanDelegate(DefaultDelegate):
             msglen = ord(dev.rawData[3:4])
             msgtype = dev.rawData[4:5].hex()
         except Exception:
-            pass
+            bleheader = ""
+            msglen = ""
+            msgtype = ""
 
         if bleheader == "020106" and msgtype == "ff":
             
