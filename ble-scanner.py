@@ -4,24 +4,24 @@ import math
 from datetime import datetime
 from bluepy.btle import Scanner, DefaultDelegate
 
+def send_hs_command(address, port, sdata):
+    data = b""
+
+    #print("TCP Opening Socket")
+    tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        tcp_sock.connect((address, port))
+        tcp_sock.send(bytes(sdata + "\r\n", "ascii"))
+        data = tcp_sock.recv(2048)
+    except socket.error:
+        print("TCP Socket closed")
+    finally:
+        tcp_sock.close()
+    return data
+
 class ScanDelegate(DefaultDelegate):
     def __init__(self):
         DefaultDelegate.__init__(self)
-
-    def send_hs_command(address, port, sdata):
-        data = b""
-
-        #print("TCP Opening Socket")
-        tcp_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            tcp_sock.connect((address, port))
-            tcp_sock.send(bytes(sdata + "\r\n", "ascii"))
-            data = tcp_sock.recv(2048)
-        except socket.error:
-            print("TCP Socket closed")
-        finally:
-            tcp_sock.close()
-        return data
 
     def handleDiscovery(self, dev, isNewDev, isNewData):
         bleheader = dev.rawData[0:3].hex()
