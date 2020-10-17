@@ -29,10 +29,10 @@ class ScanDelegate(DefaultDelegate):
         msgtype = dev.rawData[4:5].hex()
 
         if bleheader == "020106" and msgtype == "ff":
-            print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi)
-            print(' BLEHeader: ', bleheader)
-            print(' MsgLength: ', msglen)
-            print(' MsgType: ', msgtype)
+            #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi)
+            #print(' BLEHeader: ', bleheader)
+            #print(' MsgLength: ', msglen)
+            #print(' MsgType: ', msgtype)
 
             mft = int.from_bytes(dev.rawData[5:7], byteorder='little')
             if mft == 0x0499:
@@ -79,7 +79,7 @@ class ScanDelegate(DefaultDelegate):
                     "mac": mac
                 }
                 json_data = json.dumps(ble_dict, indent = 4)
-                print(json_data)
+                #print(json_data)
                 send_hs_command("10.2.0.23", 1888, json_data)                
 
             elif mft == 0x0583:
@@ -108,8 +108,8 @@ class ScanDelegate(DefaultDelegate):
             else:
                 print(' Manfacturer: ', '0x' + hex(mft)[2:].zfill(4), dev.rawData[5:7], dev.rawData[5:7].hex())
 
-            print(' RawData: ', dev.rawData[7:].hex())
-            print(' RawData Len: ', len(dev.rawData[7:]))
+            #print(' RawData: ', dev.rawData[7:].hex())
+            #print(' RawData Len: ', len(dev.rawData[7:]))
         #else:
             #print(' RawData: ', dev.rawData.hex())
             #print(' RawData Len: ', len(dev.rawData[5:]))
