@@ -65,8 +65,8 @@ class ScanDelegate(DefaultDelegate):
                 #print('      MAC:', mydata[18:24].hex())
                 # JSON Format
                 ble_dict = {"data_format": formatver,
-                    "humidity": "{:.2f}".format(humid),
-                    "temperature": "{:.2f}".format(temp),
+                    "humidity": float("{:.2f}".format(humid)),
+                    "temperature": float("{:.2f}".format(temp)),
                     "pressure": press,
                     "acceleration": math.sqrt(accx * accx + accy * accy + accz * accz),
                     "acceleration_x": accx,
