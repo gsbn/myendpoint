@@ -22,12 +22,13 @@ class ScanDelegate(DefaultDelegate):
             if mft == 0x0499:
                 print(' Manfacturer: RuuviTag 0x0499')
                 mydata = dev.rawData[7:]
+                formatver = ord(mydata[0:1])
                 print('    FormatVer:', ord(mydata[0:1]), mydata[0:1].hex())
                 temp = int.from_bytes(mydata[1:3], byteorder='big', signed=True) * 0.005
                 #print('     Temp:', temp, mydata[1:3].hex())
                 humid = int.from_bytes(mydata[3:5], byteorder='big') * 0.0025
                 #print('    Humid:', humid, mydata[3:5].hex())
-                press = int.from_bytes(mydata[5:7], byteorder='big') + 50000
+                press = (int.from_bytes(mydata[5:7], byteorder='big') + 50000) / 100
                 #print('    Press:', press, mydata[5:7].hex())
                 accx = int.from_bytes(mydata[7:9], byteorder='big', signed=True)
                 #print('     AccX:', accx, mydata[7:9].hex())
@@ -47,9 +48,9 @@ class ScanDelegate(DefaultDelegate):
                 mac = mydata[18:24].hex()
                 #print('      MAC:', mydata[18:24].hex())
                 # JSON Format
-                ble_dict = {"data_format": "101",
-                    "humidity": humid,
-                    "temperature": temp,
+                ble_dict = {"data_format": formatver,
+                    "humidity": "{:.2f}".format(humid),
+                    "temperature": "{:.2f}".format(temp),
                     "pressure": press,
                     "acceleration": 0,
                     "acceleration_x": accx,
