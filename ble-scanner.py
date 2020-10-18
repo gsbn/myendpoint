@@ -3,6 +3,7 @@ import json
 import math
 from datetime import datetime
 from bluepy.btle import Scanner, DefaultDelegate
+from multiprocessing import Process, Event
 
 def send_hs_command(address, port, sdata):
     data = b""
@@ -122,11 +123,38 @@ class ScanDelegate(DefaultDelegate):
         scanner.clear()
         scanner.start()
 
+
+class BLEScanner:
+    def __init__(self):
+        self.scanner = Scanner().withDelegate(ScanDelegate())
+
+        self.stop_event = Event()
+
+    def start(self):
+
+        self.stop_event.clear()
+
+        self.process = Process(target=self.scan, args = ())
+        self.process.start()
+        return self
+
+    def scan(self):
+        while True:
+
+            if self.stop_event.is_set():
+                return
+
+            self.devices = self.scanner.scan(5, passive=True)
+
+    def stop(self):
+        self.stop_event.set()  
+
 ##########################################################
 # Main        
 ##########################################################
-scanner = Scanner().withDelegate(ScanDelegate())
-scanner.start()
+BLEScanner().start()
 
-while True:
-    scanner.process()
+#scanner = Scanner().withDelegate(ScanDelegate())
+#scanner.start()
+#while True:
+#    scanner.process()
