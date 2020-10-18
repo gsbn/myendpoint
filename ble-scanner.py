@@ -3,7 +3,6 @@ import json
 import math
 from datetime import datetime
 from bluepy.btle import Scanner, DefaultDelegate
-from multiprocessing import Process, Event
 
 def send_hs_command(address, port, sdata):
     data = b""
@@ -35,7 +34,7 @@ class ScanDelegate(DefaultDelegate):
             msgtype = ""
 
         if bleheader == "020106" and msgtype == "ff":
-            
+
             #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi)
             #print(' BLEHeader: ', bleheader)
             #print(' MsgLength: ', msglen)
@@ -87,7 +86,7 @@ class ScanDelegate(DefaultDelegate):
                 }
                 json_data = json.dumps(ble_dict, indent = 4)
                 #print(json_data)
-                send_hs_command("10.2.0.23", 1888, json_data)                
+                send_hs_command("10.2.0.23", 1888, json_data)
 
             elif mft == 0x0583:
                 print(' Manfacturer: PuckJS 0x0583')
@@ -123,38 +122,15 @@ class ScanDelegate(DefaultDelegate):
         scanner.clear()
         scanner.start()
 
-
-class BLEScanner:
-    def __init__(self):
-        self.scanner = Scanner().withDelegate(ScanDelegate())
-
-        self.stop_event = Event()
-
-    def start(self):
-
-        self.stop_event.clear()
-
-        self.process = Process(target=self.scan, args = ())
-        self.process.start()
-        return self
-
-    def scan(self):
-        while True:
-
-            if self.stop_event.is_set():
-                return
-
-            self.devices = self.scanner.scan(5, passive=True)
-
-    def stop(self):
-        self.stop_event.set()  
-
 ##########################################################
-# Main        
+# Main
 ##########################################################
-BLEScanner().start()
 
-#scanner = Scanner().withDelegate(ScanDelegate())
-#scanner.start()
-#while True:
-#    scanner.process()
+scanner = Scanner().withDelegate(ScanDelegate())
+scanner.start()
+while True:
+    try:
+        scanner.process()
+        continue
+    except bluepy.btle.BTLEDisconnectError:
+        pass
