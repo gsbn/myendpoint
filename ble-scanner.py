@@ -2,7 +2,7 @@ import socket
 import json
 import math
 from datetime import datetime
-from bluepy.btle import Scanner, DefaultDelegate
+from bluepy.btle import Scanner, DefaultDelegate, BTLEDisconnectError, BTLEInternalError
 
 def send_hs_command(address, port, sdata):
     data = b""
@@ -132,5 +132,11 @@ while True:
     try:
         scanner.process()
         continue
-    except bluepy.btle.BTLEDisconnectError:
-        pass
+    except BTLEDisconnectError:
+        print("BTLEDisconnectError")
+        continue
+    except BTLEInternalError:
+        print("BTLEInternalError")
+        scanner.clear()
+        scanner.start()
+        continue
