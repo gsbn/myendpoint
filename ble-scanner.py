@@ -119,7 +119,12 @@ class ScanDelegate(DefaultDelegate):
         #else:
             #print(' RawData: ', dev.rawData.hex())
             #print(' RawData Len: ', len(dev.rawData[5:]))
+        scanner.clear()
+        scanner.start()
 
+##########################################################
+# Main        
+##########################################################
 scanner = Scanner().withDelegate(ScanDelegate())
 scanner.start()
 
