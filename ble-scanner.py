@@ -131,12 +131,9 @@ scanner.start()
 while True:
     try:
         scanner.process()
-        continue
     except BTLEDisconnectError:
         print("BTLEDisconnectError")
-        continue
-    except BTLEInternalError:
-        print("BTLEInternalError")
         scanner.clear()
         scanner.start()
-        continue
+    except BTLEInternalError:
+        print("BTLEInternalError")
