@@ -29,7 +29,14 @@ if [ $distro = "ras" ]; then
         screen="-1" # None
     fi
 elif [ $distro = "ubu" ]; then
-    screen=-2
+    screenraw=`xset -display :0.0 q | grep -Po 'Monitor is \s*\K.*'` 2>/dev/null
+    if [ $screenraw = "On" ]; then
+        screen="1" # On
+    elif [ $screenraw = "Off" ]; then
+        screen="0" # Off
+    else
+        screen="-1" # None
+    fi
 else
     screen=-2
 fi
