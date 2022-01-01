@@ -58,9 +58,9 @@ class ScanDelegate(DefaultDelegate):
         ProcessDevice(dev)
         scanner.clear()
         scanner.start()
-        
+
 ### MQTT
-#ble_keys = {"test":"test"}
+ble_keys = {}
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
