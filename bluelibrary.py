@@ -97,7 +97,7 @@ def ProcessRawData(rawData, ble_keys):
                     "decrypted": decrypted,
                     "doorstatus": doorstatus,
                     "battery": batt,
-                    "voltage": volt,
+                    "voltage": round(volt, 3),
                     "mac": mac.hex()
                 })
 
