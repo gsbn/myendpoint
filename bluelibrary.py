@@ -54,8 +54,10 @@ def ProcessRawData(rawData, ble_keys):
                 mac = mydata[5:11][::-1]
                 
                 # get security key from json
-                #key = bytes.fromhex("9c480e19bb03e7a262c2f1f92ec5de0d")
-                key = bytes.fromhex(ble_keys.get(mac.hex()))
+                if mac.hex() in ble_keys:
+                    key = bytes.fromhex(ble_keys.get(mac.hex()))
+                else:
+                    return None
 
                 i = (9 + 6) # Default offset
                 doorstatus = -1
