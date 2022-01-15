@@ -57,7 +57,7 @@ def ProcessRawData(rawData, ble_keys):
                 if mac.hex() in ble_keys:
                     key = bytes.fromhex(ble_keys.get(mac.hex()))
                 else:
-                    return None
+                    return ble_dict
 
                 i = (9 + 6) # Default offset
                 doorstatus = -1
