@@ -45,17 +45,17 @@ def ProcessDevice(dev):
     # Add current IP address
     ble_dict['detector'] = myip
     # Known device
-    if "device" in ble_dict:
-        json_data = json.dumps(ble_dict, indent = 4)
-        print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
-        send_udp_msg(udp_host, udp_port, json_data)
-        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port)
-    elif "debug" in ble_dict:
+    if "debug" in ble_dict:
         # Debug device for testing
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData.hex())
         json_data = json.dumps(ble_dict, indent = 4)
         print(json_data)
+    elif "device" in ble_dict:
+        json_data = json.dumps(ble_dict, indent = 4)
+        print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
+        send_udp_msg(udp_host, udp_port, json_data)
+        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port)
     #else:
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
 
