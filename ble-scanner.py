@@ -50,7 +50,7 @@ def ProcessDevice(dev):
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData.hex())
         json_data = json.dumps(ble_dict, indent = 4)
-        print(json_data)
+        #print(json_data)
     elif "device" in ble_dict:
         json_data = json.dumps(ble_dict, indent = 4)
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
