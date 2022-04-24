@@ -52,7 +52,7 @@ def ProcessRawData(rawData, ble_keys):
 
                 # extract mac address and reverse it
                 mac = mydata[5:11][::-1]
-                
+
                 # get security key from json
                 if mac.hex() in ble_keys:
                     key = bytes.fromhex(ble_keys.get(mac.hex()))
@@ -165,7 +165,6 @@ def ProcessRawData(rawData, ble_keys):
                 "measurement_sequence_number": seq,
                 "mac": mac
             })
-        
 
         elif mft == 0x0583:
             #print(' Manfacturer: PuckJS 0x0583')

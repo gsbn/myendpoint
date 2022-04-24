@@ -2,8 +2,9 @@ import socket
 import json
 import bluelibrary
 from datetime import datetime
-from bluepy.btle import Scanner, DefaultDelegate, BTLEDisconnectError, BTLEInternalError
-from paho.mqtt import client as mqtt_client # pip install paho-mqtt
+from bluepy.btle import Scanner, DefaultDelegate, BTLEDisconnectError, BTLEInternalError # pip install bluepy
+import paho.mqtt.client as mqtt_client # pip install paho-mqtt
+import paho.mqtt.publish as mqtt_publish
 
 # Global Constants
 udp_host = "10.2.0.23"
@@ -28,6 +29,7 @@ def send_tcp_msg(address, port, sdata):
 
 def send_udp_msg(address, port, sdata):
     udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp_sock.settimeout(10)
     try:
         udp_sock.sendto(bytes(sdata, "utf-8"), (address, port))
     except socket.error:
@@ -36,16 +38,24 @@ def send_udp_msg(address, port, sdata):
 # BLE Data Processor
 def ProcessDevice(dev):
     ble_dict = bluelibrary.ProcessRawData(dev.rawData, ble_keys)
-    if "debug" in ble_dict:
-        # Debug
+    # Add timestamp
+    dt = datetime.now()
+    ts = int(round(datetime.timestamp(dt)*1000))
+    ble_dict['timestamp'] = ts
+    # Add current IP address
+    ble_dict['detector'] = myip
+    # Known device
+    if "device" in ble_dict:
+        json_data = json.dumps(ble_dict, indent = 4)
+        print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
+        send_udp_msg(udp_host, udp_port, json_data)
+        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port)
+    elif "debug" in ble_dict:
+        # Debug device for testing
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData.hex())
         json_data = json.dumps(ble_dict, indent = 4)
         print(json_data)
-    elif "device" in ble_dict:
-        json_data = json.dumps(ble_dict, indent = 4)
-        print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
-        send_udp_msg(udp_host, udp_port, json_data)
     #else:
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
 
@@ -63,10 +73,10 @@ class ScanDelegate(DefaultDelegate):
 ble_keys = {}
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
-        if rc == 0:
-            print("Connected to MQTT Broker!")
-        else:
+        if rc != 0:
             print("Failed to connect, return code %d\n", rc)
+        #else:
+            #print("Connected to MQTT Broker!")
 
     client = mqtt_client.Client("python_mqtt_client")
     client.on_connect = on_connect
@@ -85,6 +95,8 @@ def subscribe_mqtt(client: mqtt_client):
 
 ### Main
 print("Started!")
+myhostname = socket.gethostname()
+myip = socket.gethostbyname(myhostname)
 # MQTT
 client = connect_mqtt()
 subscribe_mqtt(client)
