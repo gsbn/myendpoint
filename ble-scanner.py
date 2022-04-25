@@ -2,6 +2,7 @@ import socket
 import json
 import bluelibrary
 from datetime import datetime
+from secrets import secrets
 from bluepy.btle import Scanner, DefaultDelegate, BTLEDisconnectError, BTLEInternalError # pip install bluepy
 import paho.mqtt.client as mqtt_client # pip install paho-mqtt
 import paho.mqtt.publish as mqtt_publish
@@ -9,9 +10,11 @@ import paho.mqtt.publish as mqtt_publish
 # Global Constants
 udp_host = "10.2.0.23"
 udp_port = 1888
-mqtt_host = "10.2.0.24"
-mqtt_port = 1883
-mqtt_topic = "avening/ble/keys"
+mqtt_host = secrets.get('mqtt_host') # "10.2.0.24"
+mqtt_port = secrets.get('mqtt_port') # 1883
+mqtt_topic_keys = secrets.get('mqtt_topic_keys') # "avening/ble/keys"
+mqtt_username = secrets.get('mqtt_username')
+mqtt_password = secrets.get('mqtt_password')
 
 # Network TCP and UDP
 def send_tcp_msg(address, port, sdata):
@@ -89,7 +92,7 @@ def subscribe_mqtt(client: mqtt_client):
         ble_keys = json.loads(msg.payload)
         #print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 
-    client.subscribe(mqtt_topic)
+    client.subscribe(mqtt_topic_keys)
     client.on_message = on_message
 
 
