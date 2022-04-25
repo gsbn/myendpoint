@@ -51,14 +51,17 @@ def ProcessDevice(dev):
     if "debug" in ble_dict:
         # Debug device for testing
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
-        print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData.hex())
+        #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData.hex())
         json_data = json.dumps(ble_dict, indent = 4)
         #print(json_data)
     elif "device" in ble_dict:
         json_data = json.dumps(ble_dict, indent = 4)
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
         send_udp_msg(udp_host, udp_port, json_data)
-        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port)
+        mqtt_auth = None
+        if len(mqtt_username) > 0:
+            mqtt_auth = { 'username': mqtt_username, 'password': mqtt_password }
+        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port, auth=mqtt_auth)
     #else:
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
 
@@ -83,6 +86,8 @@ def connect_mqtt() -> mqtt_client:
 
     client = mqtt_client.Client("python_mqtt_client")
     client.on_connect = on_connect
+    if len(mqtt_username) > 0:
+        client.username_pw_set(username=mqtt_username,password=mqtt_password)
     client.connect(mqtt_host, mqtt_port)
     return client
 
