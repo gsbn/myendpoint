@@ -61,7 +61,10 @@ def ProcessDevice(dev):
         mqtt_auth = None
         if len(mqtt_username) > 0:
             mqtt_auth = { 'username': mqtt_username, 'password': mqtt_password }
-        mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port, auth=mqtt_auth)
+        try:
+            mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port, auth=mqtt_auth)
+        except:
+            print("MQTT Publish Single Error")
     #else:
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
 
@@ -88,7 +91,11 @@ def connect_mqtt() -> mqtt_client:
     client.on_connect = on_connect
     if len(mqtt_username) > 0:
         client.username_pw_set(username=mqtt_username,password=mqtt_password)
-    client.connect(mqtt_host, mqtt_port)
+    try:
+        client.connect(mqtt_host, mqtt_port)
+    except:
+        print("MQTT Server Error")
+
     return client
 
 def subscribe_mqtt(client: mqtt_client):
