@@ -1,5 +1,5 @@
 # Script version
-version="1.002"
+version="1.003"
 
 # Get hostname
 hostname=`hostname` 2>/dev/null
