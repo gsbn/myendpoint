@@ -30,12 +30,14 @@ fi
 # Get Monitor or Screen Status
 if [ $distro = "ras" ]; then
     screenraw=`tvservice -s | awk '{ print $2 }'` 2>/dev/null
-    if [ $screenraw = "0xa" ]; then
+    if [ -z $screenraw ]; then
+        screen="-1" # None or Error
+    elif [ $screenraw = "0xa" ]; then
         screen="1" # On
     elif [ $screenraw = "0x2" ]; then
         screen="0" # Off
     else
-        screen="-1" # None
+        screen="-2" # Error with string
     fi
 elif [ $distro = "ubu" ] || [ $distro = "pop" ]; then
     screenraw=`xset -display :0.0 q | grep -Po 'Monitor is \s*\K.*'` 2>/dev/null
