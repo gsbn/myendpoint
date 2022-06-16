@@ -21,7 +21,7 @@ uptime=`uptime -p | cut -c 4-` 2>/dev/null
 # Get Hardware
 if [ $distro = "ras" ]; then
     hard="rpi"
-    model=`cat /proc/device-tree/model | sed 's/Raspberry //'` 2>/dev/null
+    model=`cat /proc/device-tree/model | sed 's/Raspberry //' | tr -d '\0'` 2>/dev/null
 else
     hard=`sudo dmidecode | grep -A3 '^System Information' | grep 'Manufacturer:' | awk '{print tolower($2)}'` 2>/dev/null
     model=""
