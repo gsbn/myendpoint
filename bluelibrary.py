@@ -1,5 +1,5 @@
 import math
-from Cryptodome.Cipher import AES # pip install pycryptodomex
+from Cryptodome.Cipher import AES # pip install pycryptodomex==3.11
 
 def ProcessRawData(rawData, ble_keys):
     ble_dict = {}

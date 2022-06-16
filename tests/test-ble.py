@@ -1,4 +1,16 @@
+import sys
+import os
 import json
+
+# getting the name of the directory where the this file is present.
+current = os.path.dirname(os.path.realpath(__file__))
+  
+# Getting the parent directory name where the current directory is present.
+parent = os.path.dirname(current)
+  
+# adding the parent directory to the sys.path.
+sys.path.append(parent)
+
 import bluelibrary
 
 # Ruuvitag
@@ -30,7 +42,9 @@ test_qingping = "020106191695fe5858d603cada3a40342d58034f18910100007039c686"
 # "020106191695fe5858d603cada3a40342d58034f18910100007039c686"
 
 test_data = test_qingping
-ble_dict = bluelibrary.ProcessRawData(bytes.fromhex(test_data))
+
+ble_keys = {}
+ble_dict = bluelibrary.ProcessRawData(bytes.fromhex(test_data),ble_keys)
 
 if "device" in ble_dict:
     json_data = json.dumps(ble_dict, indent = 4)
