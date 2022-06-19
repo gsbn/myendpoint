@@ -15,6 +15,7 @@ mqtt_port = secrets.get('mqtt_port') # 1883
 mqtt_topic_keys = secrets.get('mqtt_topic_keys') # "avening/ble/keys"
 mqtt_username = secrets.get('mqtt_username')
 mqtt_password = secrets.get('mqtt_password')
+ble_keys = {}
 
 # Network TCP and UDP
 def send_tcp_msg(address, port, sdata):
@@ -68,18 +69,7 @@ def ProcessDevice(dev):
     #else:
         #print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
 
-### Main classes
-class ScanDelegate(DefaultDelegate):
-    def __init__(self):
-        DefaultDelegate.__init__(self)
-
-    def handleDiscovery(self, dev, isNewDev, isNewData):
-        ProcessDevice(dev)
-        scanner.clear()
-        scanner.start()
-
 ### MQTT
-ble_keys = {}
 def connect_mqtt() -> mqtt_client:
     def on_connect(client, userdata, flags, rc):
         if rc != 0:
@@ -106,6 +96,17 @@ def subscribe_mqtt(client: mqtt_client):
 
     client.subscribe(mqtt_topic_keys)
     client.on_message = on_message
+
+
+### Main classes
+class ScanDelegate(DefaultDelegate):
+    def __init__(self):
+        DefaultDelegate.__init__(self)
+
+    def handleDiscovery(self, dev, isNewDev, isNewData):
+        ProcessDevice(dev)
+        scanner.clear()
+        scanner.start()
 
 
 ### Main

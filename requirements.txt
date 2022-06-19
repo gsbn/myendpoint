@@ -1,0 +1,3 @@
+pycryptodomex==3.11
+bluepy
+paho-mqtt
