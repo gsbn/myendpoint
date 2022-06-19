@@ -57,12 +57,12 @@ def ProcessDevice(dev):
     elif "device" in ble_dict:
         json_data = json.dumps(ble_dict, indent = 4)
         print(datetime.now().time(), dev.addr, dev.addrType, dev.rssi, dev.rawData[0:15].hex()+"...")
-        send_udp_msg(udp_host, udp_port, json_data)
+        #send_udp_msg(udp_host, udp_port, json_data)
         mqtt_auth = None
         if len(mqtt_username) > 0:
             mqtt_auth = { 'username': mqtt_username, 'password': mqtt_password }
         try:
-            mqtt_publish.single('avening/ble2/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port, auth=mqtt_auth)
+            mqtt_publish.single('avening/ble/'+ble_dict['mac'][-4:], json_data, qos=2, retain=True, hostname=mqtt_host, port=mqtt_port, auth=mqtt_auth)
         except:
             print("MQTT Publish Single Error")
     #else:
