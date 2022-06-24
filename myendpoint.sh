@@ -1,5 +1,5 @@
 # Script version
-version="1.003"
+version="1.004"
 
 # Get hostname
 hostname=`hostname` 2>/dev/null
@@ -63,5 +63,13 @@ else
     temp=`cat /sys/class/thermal/thermal_zone0/temp | awk '{ print $1/1000 }'` 2>/dev/null
 fi
 
+# Check systemctl service is running
+service=`systemctl is-active ruuvi.service` 2>/dev/null
+if [ $service = "active" ]; then
+    service="1"
+else
+    service="0"
+fi
+
 # Return JSON
-printf '{"hostname":"%s","ip":"%s","distro":"%s","hw":"%s","model":"%s","uptime":"%s","screen":"%s","temp":"%0.1f°C","version":"%s"}\n' "$hostname" "$ip" "$distro" "$hard" "$model" "$uptime" "$screen" "$temp" "$version"
+printf '{"hostname":"%s","ip":"%s","distro":"%s","hw":"%s","model":"%s","uptime":"%s","screen":"%s","temp":"%0.1f°C","blestatus":"%s","version":"%s"}\n' "$hostname" "$ip" "$distro" "$hard" "$model" "$uptime" "$screen" "$temp" "$service" "$version"
