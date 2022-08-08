@@ -69,7 +69,7 @@ if [ $distro = "ras" ]; then
     fi
 elif [ $distro = "ubu" ] && [ $ui = "wayland" ]; then
     # Ubuntu running Wayland screen status
-    screenraw=`busctl --user get-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode | grep 'i '` 2>/dev/null
+    screenraw=`busctl --user get-property org.gnome.Mutter.DisplayConfig /org/gnome/Mutter/DisplayConfig org.gnome.Mutter.DisplayConfig PowerSaveMode | awk '{ print $2 }'` 2>/dev/null
     if [ -z $screenraw ]; then
         screen="-1" # None or Error
     elif [ $screenraw = "0" ]; then
