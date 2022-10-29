@@ -48,6 +48,8 @@ def ProcessDevice(dev):
     ble_dict['timestamp'] = ts
     # Add current IP address
     ble_dict['detector'] = myip
+    # Add RSSI Strength
+    ble_dict['rssi'] = dev.rssi;
     # Known device
     if "debug" in ble_dict:
         # Debug device for testing
