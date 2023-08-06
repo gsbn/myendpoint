@@ -113,8 +113,14 @@ class ScanDelegate(DefaultDelegate):
 
 ### Main
 print("Started!")
-myhostname = socket.gethostname()
-myip = socket.gethostbyname(myhostname)
+#myhostname = socket.gethostname()
+#myip = socket.gethostbyname(myhostname)
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("1.1.1.1", 80))
+myip = s.getsockname()[0]
+s.close()
+
 # MQTT
 client = connect_mqtt()
 subscribe_mqtt(client)
