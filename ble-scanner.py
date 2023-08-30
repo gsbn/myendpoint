@@ -79,7 +79,7 @@ def connect_mqtt() -> mqtt_client:
         #else:
             #print("Connected to MQTT Broker!")
 
-    client = mqtt_client.Client("python_mqtt_client")
+    client = mqtt_client.Client()
     client.on_connect = on_connect
     if len(mqtt_username) > 0:
         client.username_pw_set(username=mqtt_username,password=mqtt_password)
