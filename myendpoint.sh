@@ -101,7 +101,6 @@ elif [ $distro = "pop" ]; then
     else
         screen="-2" # Error with string
     fi
-
 else
     screen=-2
 fi

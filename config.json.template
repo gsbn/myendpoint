@@ -1,0 +1,8 @@
+{
+	"mqtt_host": "0.0.0.0",
+	"mqtt_port": 1883,
+	"mqtt_topic_keys": "site/ble/keys",
+	"mqtt_topic_endpoints": "site/ble/endpoints",
+	"mqtt_username": "",
+	"mqtt_password": ""
+}
