@@ -1,4 +1,5 @@
 import socket
+import os
 import json
 import bluelibrary, myendpoint
 from datetime import datetime
@@ -7,7 +8,7 @@ import paho.mqtt.client as mqtt_client # pip install paho-mqtt
 import paho.mqtt.publish as mqtt_publish
 
 # Settings
-with open('config.json') as f:
+with open(os.path.dirname(__file__) + '/config.json') as f:
     config = json.load(f)
 mqtt_host = config['mqtt_host']
 mqtt_port = config['mqtt_port']
